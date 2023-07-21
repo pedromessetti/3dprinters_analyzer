@@ -14,7 +14,7 @@ def get_data_from_database():
         host='localhost',
         user='printers_admin',
         password='jqzXQA_ZI$NL2aSx',
-        database='printers'
+        database='3dprinters_analyzer'
     )
 
     query = "SELECT brand, name, price, rating, num_reviews, url FROM printers_table"

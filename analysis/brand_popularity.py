@@ -7,10 +7,10 @@ def get_data_from_database():
         host='localhost',
         user='printers_admin',
         password='jqzXQA_ZI$NL2aSx',
-        database='printers'
+        database='3dprinters_analyzer'
     )
 
-    query = "SELECT brand, name, price, rating, num_reviews, url FROM printers_table"
+    query = "SELECT brand, rating, num_reviews FROM amazon_printers"
     df = pd.read_sql_query(query, connection)
 
     connection.close()
@@ -18,16 +18,19 @@ def get_data_from_database():
 
 
 def brand_popularity_analysis(df):
+
     brand_rating_average_list = []
     for brand in df['brand'].unique():
-        brand_reviews_sum = df[df['brand'] == brand]['num_reviews'].sum()
+        num_reviews = df[df['brand'] == brand]['num_reviews'][df[df['brand'] == brand]['num_reviews'] > 0]
+        brand_reviews_sum = num_reviews.sum()
         if brand_reviews_sum > 200:
-            brand_rating_average = df[df['brand'] == brand]['rating'].sum() / df[df['brand'] == brand]['rating'].count()
+            ratings = df[df['brand'] == brand]['rating'][df[df['brand'] == brand]['rating'] > 0]
+            brand_rating_average = ratings.sum() / ratings.count()
             brand_rating_average_list.append({'brand': brand, 'rating_average': round(brand_rating_average, 2), 'total_reviews': brand_reviews_sum})
 
     popular_brands_list = sorted(brand_rating_average_list, key=lambda x: x['rating_average'], reverse=True)
 
-    print(popular_brands_list[0]['brand'])
+    print(popular_brands_list)
     return popular_brands_list
 
 
@@ -43,12 +46,12 @@ def insert_into_table(popular_brands_list):
 
     for item in popular_brands_list:
         cursor.execute("""
-            INSERT INTO brand_popularity (brand, rating_average, total_reviews)
+            REPLACE INTO brand_popularity (brand, rating_average, total_reviews)
             VALUES (%s, %s, %s)
                        """, (
             item['brand'],
-            item['rating_average'],
-            item['total_reviews']
+            float(item['rating_average']),
+            int(item['total_reviews'])
             ))
         connection.commit()
 
