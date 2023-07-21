@@ -17,7 +17,7 @@ def get_data_from_database():
         database='printers'
     )
 
-    query = "SELECT brand, name, price, stars, num_reviews, url FROM printers_table"
+    query = "SELECT brand, name, price, rating, num_reviews, url FROM printers_table"
     df = pd.read_sql_query(query, connection)
 
     connection.close()

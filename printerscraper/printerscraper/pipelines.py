@@ -1,10 +1,3 @@
-# Define your item pipelines here
-#
-# Don't forget to add your pipeline to the ITEM_PIPELINES setting
-# See: https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-
-
-# useful for handling different item types with a single interface
 from itemadapter import ItemAdapter
 from scrapy.exceptions import DropItem
 from collections import defaultdict
@@ -16,7 +9,7 @@ class DuplicateCheckPipeline:
         self.seen_items = defaultdict(set)
 
     def process_item(self, item, spider):
-        item_key = (item.get('name'), item.get('brand'), item.get('price'), item.get('stars'),  item.get('num_reviews'))
+        item_key = (item.get('name'), item.get('brand'), item.get('price'), item.get('rating'),  item.get('num_reviews'))
         if item_key in self.seen_items[spider.name]:
             raise DropItem(f"Duplicate item found: {item}")
         else:
@@ -29,7 +22,7 @@ class PrinterscraperPipeline:
 
         adapter = ItemAdapter(item)
 
-        # Clean field values
+        # Clean name field
         name_keys = ['name']
         for field in name_keys:
             value = adapter.get(field)
@@ -57,7 +50,7 @@ class PrinterscraperPipeline:
             adapter[field] = value
 
         
-        # Clean field values
+        # Clean brand values
         brand_keys = ['brand']
         for field in brand_keys:
             value = adapter.get(field)
@@ -73,7 +66,7 @@ class PrinterscraperPipeline:
             name = name.replace(brand, "")
             adapter['name'] = name
 
-        # Remove all whitespaces
+        # Remove all whitespaces from all fields except url and date
         to_strip = adapter.field_names()
         for field in to_strip:
             if field is not "url" and field is not "date":
@@ -87,21 +80,21 @@ class PrinterscraperPipeline:
             value = value.replace("$", "").replace(",", ".")
             adapter[field] = float(value)
 
-        # Convert stars to float
-        stars_keys = ['stars']
-        for field in stars_keys:
+        # Convert rating to float
+        rating_keys = ['rating']
+        for field in rating_keys:
             value = adapter.get(field)
             value = value.split(" ")[0]
             adapter[field] = float(value)
 
-        # Convert num_reviews to int
+        # Clean and convert num_reviews to int
         num_reviews_keys = ['num_reviews']
         for field in num_reviews_keys:
             value = adapter.get(field)
             value = value.split(" ")[0]
             adapter[field] = int(value)
 
-        if adapter.get('price') < 100:
+        if adapter.get('price') < 90:
             raise DropItem("Price is below 100, dropping item")
         
         # Check if name is empty and remove item if it is
@@ -111,15 +104,6 @@ class PrinterscraperPipeline:
         # Limit name to 30 characters
         name = adapter.get('name')
         adapter['name'] = name[:30]
-
-        # Remove spaces and measure units from area
-        #area_keys = ['area']
-        #for field in area_keys:
-        #    value = adapter.get(field)
-        #    if "x" not in value:
-        #        adapter[field] = "Not specified"
-        #    else:
-        #        adapter[field] = value.replace("mm", "").replace(" ", "").replace("Ø", "")
 
         return item
                     
@@ -138,21 +122,21 @@ class SaveToMySQLPipeline:
             host = 'localhost',
             user = 'printers_admin',
             password = 'jqzXQA_ZI$NL2aSx',
-            database = 'printers'
+            database = '3dprinters_analyzer'
         )
 
         self.cur = self.conn.cursor()
 
         # Create table if not exists
         self.cur.execute("""
-            CREATE TABLE IF NOT EXISTS test (
+            CREATE TABLE IF NOT EXISTS amazon_printers (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 fonte VARCHAR(10),
                 date DATE,
                 name VARCHAR(30),
                 brand VARCHAR(20),
                 price DECIMAL(10,2),
-                stars DECIMAL(2,1),
+                rating DECIMAL(2,1),
                 num_reviews INT,
                 url VARCHAR(255)
             )
@@ -160,7 +144,7 @@ class SaveToMySQLPipeline:
 
     def process_item(self, item, spider):
         self.cur.execute("""
-            INSERT INTO test (fonte, date, name, brand, price, stars, num_reviews, url)
+            INSERT INTO amazon_printers (fonte, date, name, brand, price, rating, num_reviews, url)
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s)
         """, (
             item.get('fonte'),
@@ -168,7 +152,7 @@ class SaveToMySQLPipeline:
             item.get('name'),
             item.get('brand'),
             item.get('price'),
-            item.get('stars'),
+            item.get('rating'),
             item.get('num_reviews'),
             item.get('url')
         ))

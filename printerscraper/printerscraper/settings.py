@@ -1,20 +1,9 @@
 # Scrapy settings for printerscraper project
-#
-# For simplicity, this file contains only settings considered important or
-# commonly used. You can find more settings consulting the documentation:
-#
-#     https://docs.scrapy.org/en/latest/topics/settings.html
-#     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
-#     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
 BOT_NAME = "printerscraper"
 
 SPIDER_MODULES = ["printerscraper.spiders"]
 NEWSPIDER_MODULE = "printerscraper.spiders"
-
-#FEEDS = {
-#    "printersdata.json": {"format": "json", "encoding": "utf8", "overwrite": True}
-#}
 
 SCRAPEOPS_API_KEY = '77ab83ba-f20e-4d50-9754-638db86fb077'
 SCRAPEOPS_FAKE_BROWSER_HEADER_ENDPOINT = "https://headers.scrapeops.io/v1/browser-headers"
@@ -59,8 +48,8 @@ COOKIES_ENABLED = True
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    #"printerscraper.middlewares.PrinterscraperDownloaderMiddleware": 543,
     'printerscraper.middlewares.ScrapeOpsFakeBrowserHeaderAgentMiddleware': 400,
+    #"printerscraper.middlewares.PrinterscraperDownloaderMiddleware": 543,
 }
 
 # Enable or disable extensions

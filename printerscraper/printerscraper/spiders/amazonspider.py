@@ -3,8 +3,8 @@ from datetime import date
 from printerscraper.items import PrinterItem
 
 
-class WortenspiderSpider(scrapy.Spider):
-    name = "amazonspider"
+class AmazonSpider(scrapy.Spider):
+    name = "amazon_spider"
     allowed_domains = ["www.amazon.com"]
     start_urls = ["https://www.amazon.com/s?k=3d+printer"]
     source_name = "Amazon"
@@ -39,7 +39,7 @@ class WortenspiderSpider(scrapy.Spider):
             brand=response.css("div#productOverview_feature_div table td.a-span9 span::text").get(default="Unknow"),
             price=response.css("span.a-price span::text").get(default="0"),
             currency="$",
-            stars=response.css("div#customerReviews div.AverageCustomerReviews span::text").get(default="0"),
+            rating=response.css("div#customerReviews div.AverageCustomerReviews span::text").get(default="0"),
             num_reviews=response.css("div#customerReviews div.averageStarRatingNumerical span::text").get(default="0"),
             url=response.url
         )

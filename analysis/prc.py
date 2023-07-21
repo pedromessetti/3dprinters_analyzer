@@ -4,9 +4,9 @@ import tkinter as tk
 def price_range_recommendations(df):
     df['price_range'] = pd.cut(df['price'], bins=[0, 200, 400, float('inf')], labels=['Budget', 'Mid-Range', 'Premium'])
 
-    budget_customers = df[(df['stars'] >= 4) & (df['num_reviews'] >= 50) & (df['price_range'] == 'Budget')]
-    mid_range_customers = df[(df['stars'] >= 4.5) & (df['num_reviews'] >= 100) & (df['price_range'] == 'Mid-Range')]
-    premium_customers = df[(df['stars'] >= 4.8) & (df['num_reviews'] >= 100) & (df['price_range'] == 'Premium')]
+    budget_customers = df[(df['rating'] >= 4) & (df['num_reviews'] >= 50) & (df['price_range'] == 'Budget')]
+    mid_range_customers = df[(df['rating'] >= 4.5) & (df['num_reviews'] >= 100) & (df['price_range'] == 'Mid-Range')]
+    premium_customers = df[(df['rating'] >= 4.8) & (df['num_reviews'] >= 100) & (df['price_range'] == 'Premium')]
 
     root = tk.Tk()
     root.title("Price Range")

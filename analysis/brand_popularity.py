@@ -10,7 +10,7 @@ def get_data_from_database():
         database='printers'
     )
 
-    query = "SELECT brand, name, price, stars, num_reviews, url FROM printers_table"
+    query = "SELECT brand, name, price, rating, num_reviews, url FROM printers_table"
     df = pd.read_sql_query(query, connection)
 
     connection.close()
@@ -22,7 +22,7 @@ def brand_popularity_analysis(df):
     for brand in df['brand'].unique():
         brand_reviews_sum = df[df['brand'] == brand]['num_reviews'].sum()
         if brand_reviews_sum > 200:
-            brand_rating_average = df[df['brand'] == brand]['stars'].sum() / df[df['brand'] == brand]['stars'].count()
+            brand_rating_average = df[df['brand'] == brand]['rating'].sum() / df[df['brand'] == brand]['rating'].count()
             brand_rating_average_list.append({'brand': brand, 'rating_average': round(brand_rating_average, 2), 'total_reviews': brand_reviews_sum})
 
     popular_brands_list = sorted(brand_rating_average_list, key=lambda x: x['rating_average'], reverse=True)
