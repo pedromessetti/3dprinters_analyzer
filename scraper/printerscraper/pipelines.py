@@ -9,7 +9,7 @@ class DuplicateCheckPipeline:
         self.seen_items = defaultdict(set)
 
     def process_item(self, item, spider):
-        item_key = (item.get('name'), item.get('brand'), item.get('price'), item.get('rating'),  item.get('num_reviews'), item.get('url'))
+        item_key = (item.get('name')[:30], item.get('brand'), item.get('price'), item.get('rating'),  item.get('num_reviews'))
         if item_key in self.seen_items[spider.name]:
             raise DropItem(f"Duplicate item found: {item}")
         else:

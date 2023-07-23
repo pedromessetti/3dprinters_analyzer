@@ -2,7 +2,8 @@ from db import Database
 
 
 def brand_popularity_analysis():
-    df = Database.get_data_from_database()
+    db = Database()
+    df = db.get_data()
     brand_rating_average_list = []
     for brand in df['brand'].unique():
         num_reviews = df[df['brand'] == brand]['num_reviews'][df[df['brand'] == brand]['num_reviews'] > 0]
@@ -15,7 +16,7 @@ def brand_popularity_analysis():
     popular_brands_list = sorted(brand_rating_average_list, key=lambda x: x['rating_average'], reverse=True)
 
     print(popular_brands_list)
-    Database.insert_popular_brands(popular_brands_list)
+    db.insert_popular_brands(popular_brands_list)
 
 
 brand_popularity_analysis()

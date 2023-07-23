@@ -7,7 +7,7 @@ class AmazonSpider(scrapy.Spider):
     name = "amazonspider"
     allowed_domains = ["www.amazon.com"]
     start_urls = ["https://www.amazon.com/s?k=3d+printer&i=industrial&rh=n%3A6066127011"]
-    source_name = "test"
+    source_name = "Amazon"
     scraped_date = date.today()
 
     custom_settings = {

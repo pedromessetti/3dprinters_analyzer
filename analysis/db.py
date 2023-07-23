@@ -10,17 +10,12 @@ class Database:
             password = 'jqzXQA_ZI$NL2aSx',
             database = '3dprinters_analyzer'
         )
-        print("CONNECTION OK")
-
         self.cur = self.conn.cursor()
 
 
-    def get_data_from_database(self):
-        query = "SELECT * FROM teste"
+    def get_data(self):
+        query = "SELECT * FROM amazon_printers"
         df = pd.read_sql_query(query, self.conn)
-
-        self.conn.close()
-        print("CONNECTION CLOSED")
         return df
 
 
@@ -47,4 +42,3 @@ class Database:
 
         self.cur.close()
         self.conn.close()
-        print("CONNECTION CLOSED")
