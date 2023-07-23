@@ -14,7 +14,7 @@ class PrinterItem(scrapy.Item):
     brand = scrapy.Field()
     price = scrapy.Field()
     currency = scrapy.Field()
+    available = scrapy.Field()
     rating = scrapy.Field()
     num_reviews = scrapy.Field()
-    #area = scrapy.Field()
     url = scrapy.Field()

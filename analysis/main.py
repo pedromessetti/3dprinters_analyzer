@@ -1,5 +1,4 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import mysql.connector
 import tkinter as tk
 from tkinter import ttk
