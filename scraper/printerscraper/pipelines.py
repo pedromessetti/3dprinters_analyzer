@@ -24,10 +24,11 @@ class PrinterscraperPipeline:
 
         # Clean name field
         name = adapter.get('name')
-        name = name.replace("Official", "").replace("3D Printers", "").replace("3D Printer", "").replace("FDM", "").replace("Resin", "").replace("LCD", "").replace("SLA", "").replace("DLP", "").replace("FFF", "").replace("DIY", "").replace("Kit", "").replace("Printer", "")
+        name = name.lower()
+        name = name.replace("official", "").replace("3d printers", "").replace("3d printer", "").replace("fdm", "").replace("resin", "").replace("lcd", "").replace("sla", "").replace("dlp", "").replace("fff", "").replace("diy", "").replace("kit", "").replace("printer", "")
         brand = adapter.get('brand')
-        if brand.lower() in name.lower():
-            name = name.replace(brand, "").strip()
+        if brand.lower() in name:
+            name = name.replace(brand.lower(), "").strip()
         if ", " in name:
             if name[0] == "," or name[1] == ",":
                 name = name[:2].split(",")[0].strip()
@@ -50,7 +51,7 @@ class PrinterscraperPipeline:
 
         # Clean brand values
         brand = adapter.get('brand')
-        brand = brand.capitalize()
+        brand = brand.lower()
         if " " in brand and brand[1] != " " and brand[2] != " ":
             brand = brand.split(" ")[0]
         adapter['brand'] = brand

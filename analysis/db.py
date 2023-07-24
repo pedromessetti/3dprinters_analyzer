@@ -14,7 +14,7 @@ class Database:
 
 
     def get_data(self):
-        query = "SELECT * FROM amazon_printers"
+        query = "SELECT * FROM teste"
         df = pd.read_sql_query(query, self.conn)
         return df
 
